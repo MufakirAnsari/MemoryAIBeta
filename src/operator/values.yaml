@@ -1,0 +1,277 @@
+# Default values for MemoryAI Enterprise
+# This is a YAML-formatted file.
+
+# Global configuration
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+  storageClass: ""
+  
+  # Post-quantum security
+  postQuantum:
+    enabled: true
+    signatureAlgorithm: "Dilithium-3"
+    
+  # Differential privacy
+  differentialPrivacy:
+    enabled: true
+    epsilon: 0.5
+    delta: 1e-5
+
+# Common configuration
+common:
+  labels: {}
+  annotations: {}
+  
+# Image configuration
+image:
+  registry: memoryai
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+# Service configuration
+service:
+  type: ClusterIP
+  ports:
+    http: 80
+    https: 443
+    grpc: 8080
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: memoryai.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+# Pod security context
+podSecurityContext:
+  enabled: true
+
+# Resource limits
+resources:
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+  requests:
+    cpu: 1000m
+    memory: 2Gi
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
+
+# LLM Core Service
+llmCore:
+  enabled: true
+  image:
+    repository: memoryai/llama-cpp
+    tag: mythic-mp30-v2.1
+    digest: "sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
+  
+  resources:
+    limits:
+      cpu: 4000m
+      memory: 8Gi
+    requests:
+      cpu: 2000m
+      memory: 4Gi
+  
+  # Mythic MP-30 configuration
+  mythic:
+    enabled: true
+    deviceId: 0
+    performanceMode: "max"
+    powerLimit: 150
+    memoryPoolSize: 1024
+  
+  # Model configuration
+  model:
+    path: "/app/models/llama-4-2b-moe-q4_0.gguf"
+    contextSize: 32768
+    batchSize: 512
+    threads: 8
+    gpuLayers: 999
+  
+  # Post-quantum signatures
+  pqSignatures:
+    enabled: true
+    verify: true
+
+# Memory Service
+memory:
+  enabled: true
+  image:
+    repository: memoryai/memory-fusion
+    tag: v1.8
+    digest: "sha256:b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567"
+  
+  # RAG fusion configuration
+  ragFusion:
+    denseModel: "sentence-transformers/all-MiniLM-L6-v2"
+    sparseModel: "naver/splade-v3"
+    colbertModel: "colbert-ir/colbertv2.0"
+    topK: 10
+  
+  # Differential privacy
+  dp:
+    epsilon: 0.5
+    enabled: true
+
+# Suggestion Service
+suggestion:
+  enabled: true
+  image:
+    repository: memoryai/suggest-router
+    tag: v1.5
+    digest: "sha256:c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678"
+  
+  # Routing configuration
+  routing:
+    globalTimeout: 1.2
+    fallbackCascade: true
+    crlHF: true
+    zkProofVerify: true
+
+# Guardian Service
+guardian:
+  enabled: true
+  image:
+    repository: memoryai/guardian
+    tag: v1.3
+    digest: "sha256:d4e5f6789012345678901234567890abcdef1234567890abcdef123456789"
+  
+  # Safety configuration
+  safety:
+    teenClassifierThreshold: 0.85
+    immutableAudit: true
+    killSwitch: true
+    gdprTeenConsent: true
+    coppaCompliance: true
+
+# Federated Service
+federated:
+  enabled: true
+  image:
+    repository: memoryai/federated
+    tag: v1.2
+    digest: "sha256:e5f6789012345678901234567890abcdef1234567890abcdef1234567890"
+  
+  # DP configuration
+  dp:
+    epsilon: 0.1
+    histogramBuckets: 100
+    optInOnly: true
+    zkProofGrad: true
+
+# Web UI
+webUI:
+  enabled: true
+  image:
+    repository: memoryai/web-ui
+    tag: halo-focus-v1.7
+    digest: "sha256:f6789012345678901234567890abcdef1234567890abcdef12345678901"
+  
+  # UI configuration
+  ui:
+    glassMorphic: true
+    haloMode: true
+    focusMode: true
+    teenPalette: true
+
+# Database configuration
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "memoryai_secure_password"
+    database: "memoryai"
+    username: "memoryai"
+    password: "memoryai_secure_password"
+  
+  persistence:
+    enabled: true
+    size: 10Gi
+
+redis:
+  enabled: true
+  auth:
+    enabled: false
+  
+  persistence:
+    enabled: true
+    size: 5Gi
+
+# Monitoring
+prometheus:
+  enabled: true
+  server:
+    persistentVolume:
+      enabled: true
+      size: 10Gi
+
+grafana:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 5Gi
+  admin:
+    password: "memoryai_admin"
+
+# Autoscaling
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilization: 70
+  targetMemoryUtilization: 80
+
+# Network policies
+networkPolicy:
+  enabled: true
+  
+  # Allow egress to specific services
+  egress:
+    - toServices:
+        - prometheus-server
+        - grafana
+    - toCIDR: "0.0.0.0/0"
+      except: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+
+# Pod disruption budgets
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Service mesh
+serviceMesh:
+  enabled: false
+  istio:
+    enabled: false
+    injection: false
+
+# Backup configuration
+backup:
+  enabled: true
+  schedule: "0 2 * * *"
+  retention: 7
+  storage:
+    size: 50Gi

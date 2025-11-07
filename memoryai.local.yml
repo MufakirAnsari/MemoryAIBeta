@@ -1,0 +1,189 @@
+# MemoryAI Enterprise - Local Air-Gap Deployment
+# Docker Compose configuration for fully functional stack
+# Compatible with M1/x86_64/RISC-V architectures
+
+version: '3.8'
+
+services:
+  # Core LLM Service with Mythic MP-30 acceleration
+  llm-core:
+    image: memoryai/llama-cpp:mythic-mp30-v2.1@sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456
+    container_name: memoryai-llm
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src/llm:/app/models:ro
+      - ./src/llm/safety_lora_rank32:/app/loras:ro
+    environment:
+      - MODEL_PATH=/app/models/llama-4-2b-moe-q4_0.gguf
+      - NGL=999  # GPU layers
+      - CONTEXT_SIZE=32768
+      - BATCH_SIZE=512
+      - THREADS=8
+      - MYTHIC_OFFLOAD=true
+      - PQ_SIGNATURE_VERIFY=true
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Memory & RAG Fusion Service
+  memory-service:
+    image: memoryai/memory-fusion:v1.8@sha256:b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567
+    container_name: memoryai-memory
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./src/memory:/app/src:ro
+      - ./data/memory:/app/data
+    environment:
+      - DENSE_EMBED_MODEL=sentence-transformers/all-MiniLM-L6-v2
+      - SPARSE_MODEL=naver/splade-v3
+      - GRAPH_DB_PATH=/app/data/wpmg.db
+      - COLBERT_MODEL=colbert-ir/colbertv2.0
+      - FUSION_TOP_K=10
+      - DP_EPSILON=0.5
+    depends_on:
+      - llm-core
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Suggestion & Global Router Service
+  suggest-service:
+    image: memoryai/suggest-router:v1.5@sha256:c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678
+    container_name: memoryai-suggest
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./src/suggest:/app/src:ro
+      - ./src/llm/router_zk:/app/zk:ro
+    environment:
+      - GLOBAL_LLM_TIMEOUT=1.2
+      - FALLBACK_CASCADE=true
+      - CRL_HF_ENABLED=true
+      - ZK_PROOF_VERIFY=true
+    depends_on:
+      - llm-core
+      - memory-service
+
+  # Guardian & Safety Service
+  guardian-service:
+    image: memoryai/guardian:v1.3@sha256:d4e5f6789012345678901234567890abcdef1234567890abcdef123456789
+    container_name: memoryai-guardian
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./src/guardian:/app/src:ro
+      - ./src/guardian/teen_mood_classifier.onnx:/app/models/teen_mood_classifier.onnx:ro
+    environment:
+      - TEEN_CLASSIFIER_THRESHOLD=0.85
+      - IMMUTABLE_AUDIT=true
+      - KILL_SWITCH_ENABLED=true
+      - GDPR_TEEN_CONSENT=true
+      - COPPA_COMPLIANCE=true
+
+  # Federated Analytics Service
+  federated-service:
+    image: memoryai/federated:v1.2@sha256:e5f6789012345678901234567890abcdef1234567890abcdef1234567890
+    container_name: memoryai-federated
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    volumes:
+      - ./src/federated:/app/src:ro
+      - ./data/federated:/app/data
+    environment:
+      - DP_EPSILON=0.1
+      - HISTOGRAM_BUCKETS=100
+      - OPT_IN_ONLY=true
+      - ZK_PROOF_GRAD=true
+
+  # Web UI - Glass-morphic Orb
+  web-ui:
+    image: memoryai/web-ui:halo-focus-v1.7@sha256:f6789012345678901234567890abcdef1234567890abcdef12345678901
+    container_name: memoryai-ui
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src/ui:/app/src:ro
+    environment:
+      - REACT_APP_API_URL=http://localhost:8082
+      - GLASS_MORPHIC=true
+      - HALO_MODE=true
+      - FOCUS_MODE=true
+      - TEEN_PALETTE=true
+    depends_on:
+      - suggest-service
+
+  # PostgreSQL for persistent storage
+  postgres:
+    image: postgres:15-alpine@sha256:6789012345678901234567890abcdef1234567890abcdef123456789012
+    container_name: memoryai-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=memoryai
+      - POSTGRES_USER=memoryai
+      - POSTGRES_PASSWORD=memoryai_secure_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine@sha256:789012345678901234567890abcdef1234567890abcdef1234567890123
+    container_name: memoryai-redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+  # Monitoring & Observability
+  prometheus:
+    image: prom/prometheus:v2.45@sha256:89012345678901234567890abcdef1234567890abcdef12345678901234
+    container_name: memoryai-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+
+  grafana:
+    image: grafana/grafana:10.0@sha256:9012345678901234567890abcdef1234567890abcdef123456789012345
+    container_name: memoryai-grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=memoryai_admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  default:
+    name: memoryai-network
+    driver: bridge

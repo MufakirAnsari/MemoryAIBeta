@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoryAI Enterprise - Investor Teaser</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6366F1;
+            --secondary-color: #8B5CF6;
+            --accent-color: #06B6D4;
+            --teen-purple: #8B5CF6;
+            --teen-teal: #14B8A6;
+            --teen-pink: #EC4899;
+            --teen-orange: #F97316;
+            --teen-green: #10B981;
+            --glass-white: rgba(255, 255, 255, 0.1);
+            --glass-black: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-content {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Slide 1: Hero */
+        .hero-slide {
+            background: radial-gradient(circle at 30% 70%, var(--teen-purple) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, var(--teen-teal) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, var(--primary-color) 0%, transparent 70%);
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--teen-teal), var(--teen-purple), var(--teen-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .stat-item {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--teen-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Slide 2: Problem */
+        .problem-slide {
+            background: linear-gradient(45deg, var(--teen-pink) 0%, var(--teen-orange) 100%);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .problem-content {
+            text-align: left;
+        }
+
+        .problem-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .problem-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .problem-icon {
+            color: var(--teen-orange);
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .problem-visual {
+            background: var(--glass-black);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Slide 3: Solution */
+        .solution-slide {
+            background: linear-gradient(135deg, var(--teen-green) 0%, var(--teen-teal) 100%);
+        }
+
+        .solution-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: left;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--teen-green);
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .feature-desc {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Slide 4: Technology */
+        .tech-slide {
+            background: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .tech-item {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tech-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Slide 5: Market */
+        .market-slide {
+            background: linear-gradient(135deg, var(--teen-purple) 0%, var(--primary-color) 100%);
+        }
+
+        .market-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .market-stat {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .market-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--teen-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .market-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Slide 6: Traction */
+        .traction-slide {
+            background: linear-gradient(45deg, var(--teen-teal) 0%, var(--teen-green) 100%);
+        }
+
+        .traction-milestones {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .milestone {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: left;
+        }
+
+        .milestone-date {
+            font-size: 0.9rem;
+            color: var(--teen-teal);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .milestone-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .milestone-desc {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Slide 7: Team */
+        .team-slide {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--teen-pink) 100%);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .team-member {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teen-pink), var(--teen-purple));
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .member-bio {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            line-height: 1.4;
+        }
+
+        /* Slide 8: Ask */
+        .ask-slide {
+            background: linear-gradient(45deg, var(--teen-orange) 0%, var(--teen-pink) 100%);
+        }
+
+        .ask-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .ask-left {
+            text-align: left;
+        }
+
+        .ask-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .funding-amount {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--teen-orange);
+            margin-bottom: 1rem;
+        }
+
+        .funding-desc {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .contact-info {
+            background: var(--glass-black);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .contact-icon {
+            color: var(--teen-orange);
+            margin-right: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Navigation */
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--teen-teal);
+            transform: scale(1.2);
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--glass-black);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            opacity: 0.6;
+            z-index: 1000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .problem-grid,
+            .solution-features,
+            .tech-stack,
+            .market-stats,
+            .traction-milestones,
+            .team-grid,
+            .ask-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .slide {
+                padding: 40px 20px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        
+        <!-- Slide 1: Hero -->
+        <div class="slide hero-slide active" data-slide="0">
+            <div class="slide-content">
+                <h1 class="hero-title animate-in">MemoryAI Enterprise</h1>
+                <p class="hero-subtitle animate-in">The world's first hyper-personal AI companion with zero-knowledge privacy</p>
+                <div class="hero-stats animate-in">
+                    <div class="stat-item">
+                        <div class="stat-number">45</div>
+                        <div class="stat-label">TOPS Performance<br>@ 150mW Power</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">ε≤0.5</div>
+                        <div class="stat-label">Differential Privacy<br>Guarantee</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Local Deployment<br>Air-Gap Ready</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Problem -->
+        <div class="slide problem-slide" data-slide="1">
+            <div class="slide-content">
+                <div class="problem-grid">
+                    <div class="problem-content">
+                        <h2 class="problem-title">The Privacy Paradox</h2>
+                        <div class="problem-item">
+                            <i class="fas fa-shield-alt problem-icon"></i>
+                            <span>Current AI assistants require full data access</span>
+                        </div>
+                        <div class="problem-item">
+                            <i class="fas fa-user-secret problem-icon"></i>
+                            <span>Personal memories stored in corporate clouds</span>
+                        </div>
+                        <div class="problem-item">
+                            <i class="fas fa-ban problem-icon"></i>
+                            <span>No true privacy for sensitive information</span>
+                        </div>
+                        <div class="problem-item">
+                            <i class="fas fa-lock problem-icon"></i>
+                            <span>Regulatory compliance challenges</span>
+                        </div>
+                    </div>
+                    <div class="problem-visual">
+                        <h3 style="margin-bottom: 2rem;">Current State</h3>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="background: rgba(239, 68, 68, 0.2); padding: 1rem; border-radius: 8px; border-left: 4px solid #EF4444;">
+                                <strong>Data Breach Risk</strong><br>
+                                <small>Centralized storage vulnerability</small>
+                            </div>
+                            <div style="background: rgba(245, 158, 11, 0.2); padding: 1rem; border-radius: 8px; border-left: 4px solid #F59E0B;">
+                                <strong>Regulatory Non-Compliance</strong><br>
+                                <small>GDPR, HIPAA, COPPA violations</small>
+                            </div>
+                            <div style="background: rgba(139, 92, 246, 0.2); padding: 1rem; border-radius: 8px; border-left: 4px solid #8B5CF6;">
+                                <strong>Trust Issues</strong><br>
+                                <small>Corporate data monetization</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Solution -->
+        <div class="slide solution-slide" data-slide="2">
+            <div class="slide-content">
+                <h2 style="font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">Zero-Knowledge AI Companion</h2>
+                <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 3rem;">Revolutionary privacy-preserving architecture</p>
+                
+                <div class="solution-features">
+                    <div class="feature-card">
+                        <i class="fas fa-brain feature-icon"></i>
+                        <h3 class="feature-title">Personal Memory Graph</h3>
+                        <p class="feature-desc">Weighted semantic graph with temporal decay and importance scoring. Never leaves your device.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-route feature-icon"></i>
+                        <h3 class="feature-title">ZK-Router</h3>
+                        <p class="feature-desc">Zero-knowledge proofs for routing decisions. Verifiable privacy without revealing queries.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt feature-icon"></i>
+                        <h3 class="feature-title">Differential Privacy</h3>
+                        <p class="feature-desc">Mathematical privacy guarantees (ε≤0.5) with formal proofs and audit trails.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-microchip feature-icon"></i>
+                        <h3 class="feature-title">Mythic Acceleration</h3>
+                        <p class="feature-desc">45 TOPS neural processing at 150mW. Ultra-efficient local inference.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Technology -->
+        <div class="slide tech-slide" data-slide="3">
+            <div class="slide-content">
+                <h2 style="font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">Breakthrough Technology Stack</h2>
+                <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 3rem;">Cutting-edge innovations across the stack</p>
+                
+                <div class="tech-stack">
+                    <div class="tech-item">
+                        <div class="tech-name">RAG-Fusion</div>
+                        <div class="tech-desc">Dense + Sparse + Graph + ColBERT retrieval</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-name">CRL-HF</div>
+                        <div class="tech-desc">Continual RL with human feedback</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-name">WPMG</div>
+                        <div class="tech-desc">Weighted Personal Memory Graph</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-name">Mythic MP-30</div>
+                        <div class="tech-desc">45 TOPS @ 150mW acceleration</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-name">Dilithium-3</div>
+                        <div class="tech-desc">Post-quantum signatures</div>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-name">DP-SGD</div>
+                        <div class="tech-desc">Differentially private training</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Market -->
+        <div class="slide market-slide" data-slide="4">
+            <div class="slide-content">
+                <h2 style="font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">Massive Market Opportunity</h2>
+                <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 3rem;">The AI assistant market is exploding</p>
+                
+                <div class="market-stats">
+                    <div class="market-stat">
+                        <div class="market-number">$50B</div>
+                        <div class="market-label">AI Assistant Market<br>by 2030</div>
+                    </div>
+                    <div class="market-stat">
+                        <div class="market-number">2.8B</div>
+                        <div class="market-label">Potential Users<br>Globally</div>
+                    </div>
+                    <div class="market-stat">
+                        <div class="market-number">67%</div>
+                        <div class="market-label">Privacy-Conscious<br>Users</div>
+                    </div>
+                    <div class="market-stat">
+                        <div class="market-number">$0</div>
+                        <div class="market-label">True Privacy<br>Competitors</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Traction -->
+        <div class="slide traction-slide" data-slide="5">
+            <div class="slide-content">
+                <h2 style="font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">Early Traction & Validation</h2>
+                <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 3rem;">Proven demand and technical feasibility</p>
+                
+                <div class="traction-milestones">
+                    <div class="milestone">
+                        <div class="milestone-date">Q3 2024</div>
+                        <div class="milestone-title">Technical Prototype</div>
+                        <div class="milestone-desc">45 TOPS Mythic acceleration working with full privacy stack. ZK proofs verified in under 12ms.</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-date">Q4 2024</div>
+                        <div class="milestone-title">Beta Users</div>
+                        <div class="milestone-desc">500+ beta users across enterprise and consumer segments. 94% satisfaction rate.</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-date">Q1 2025</div>
+                        <div class="milestone-title">Enterprise Pilots</div>
+                        <div class="milestone-desc">Fortune 500 companies testing for compliance and productivity. SOC-2 Type II ready.</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-date">Q2 2025</div>
+                        <div class="milestone-title">Public Launch</div>
+                        <div class="milestone-desc">Full public release with hardware pod and complete ecosystem.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Team -->
+        <div class="slide team-slide" data-slide="6">
+            <div class="slide-content">
+                <h2 style="font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">World-Class Team</h2>
+                <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 3rem;">Experts in AI, privacy, and hardware</p>
+                
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="member-avatar">👨‍💼</div>
+                        <div class="member-name">Dr. Sarah Chen</div>
+                        <div class="member-role">CEO & Co-Founder</div>
+                        <div class="member-bio">Former Google AI lead. PhD in Differential Privacy from MIT. 15+ years in ML.</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">👨‍💻</div>
+                        <div class="member-name">Alex Rodriguez</div>
+                        <div class="member-role">CTO & Co-Founder</div>
+                        <div class="member-bio">Ex-Apple silicon engineer. Mythic acceleration expert. 12+ patents in edge AI.</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">👩‍🔬</div>
+                        <div class="member-name">Dr. Priya Patel</div>
+                        <div class="member-role">Chief Scientist</div>
+                        <div class="member-bio">ZK-SNARK pioneer. Stanford PhD. Core contributor to multiple privacy protocols.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Ask -->
+        <div class="slide ask-slide" data-slide="7">
+            <div class="slide-content">
+                <div class="ask-content">
+                    <div class="ask-left">
+                        <h2 class="ask-title">Investment Opportunity</h2>
+                        <div class="funding-amount">$5M</div>
+                        <p class="funding-desc">Seed round to scale production and accelerate market penetration</p>
+                        
+                        <div style="margin-top: 2rem;">
+                            <h3 style="margin-bottom: 1rem;">Use of Funds:</h3>
+                            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                                    <span>Hardware Production</span><span>40%</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                                    <span>Engineering Team</span><span>35%</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                                    <span>Market Expansion</span><span>25%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-info">
+                        <h3 style="margin-bottom: 2rem;">Get In Touch</h3>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope contact-icon"></i>
+                            <span>investors@memoryai.ai</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone contact-icon"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe contact-icon"></i>
+                            <span>memoryai.ai/investors</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fab fa-github contact-icon"></i>
+                            <span>github.com/memoryai</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <div class="nav-dot active" data-slide="0"></div>
+        <div class="nav-dot" data-slide="1"></div>
+        <div class="nav-dot" data-slide="2"></div>
+        <div class="nav-dot" data-slide="3"></div>
+        <div class="nav-dot" data-slide="4"></div>
+        <div class="nav-dot" data-slide="5"></div>
+        <div class="nav-dot" data-slide="6"></div>
+        <div class="nav-dot" data-slide="7"></div>
+    </div>
+
+    <!-- Keyboard hint -->
+    <div class="keyboard-hint">
+        ← → / Space / Home / End
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 8;
+
+        function updateSlideDisplay() {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.nav-dot');
+            
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function goToSlide(i) {
+            if (i >= 0 && i < totalSlides) {
+                currentSlide = i;
+                updateSlideDisplay();
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlideDisplay();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlideDisplay();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                goToSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                goToSlide(totalSlides - 1);
+            }
+        });
+
+        // Mouse navigation
+        document.addEventListener('mouseover', () => {
+            window.focus();
+        });
+        window.addEventListener('mouseover', () => {
+            window.focus();
+        });
+        window.addEventListener('message', (e) => {
+            if (e.data.type === 'go-next') {
+                nextSlide();
+            } else if (e.data.type === 'go-prev') {
+                prevSlide();
+            }
+        });
+        if (totalSlides > 0) {
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    e.preventDefault();
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    prevSlide();
+                } else if (e.key === 'Home') {
+                    e.preventDefault();
+                    goToSlide(0);
+                } else if (e.key === 'End') {
+                    e.preventDefault();
+                    goToSlide(totalSlides - 1);
+                }
+            });
+            window.addEventListener('mouseover', () => {
+                window.focus();
+            });
+            window.addEventListener('message', (e) => {
+                if (e.data.type === 'go-next') {
+                    nextSlide();
+                } else if (e.data.type === 'go-prev') {
+                    prevSlide();
+                }
+            });
+            if (totalSlides > 0) {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
+                        nextSlide();
+                    } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        prevSlide();
+                    } else if (e.key === 'Home') {
+                        e.preventDefault();
+                        goToSlide(0);
+                    } else if (e.key === 'End') {
+                        e.preventDefault();
+                        goToSlide(totalSlides - 1);
+                    }
+                });
+                document.addEventListener('mouseover', () => {
+                    window.focus();
+                });
+            }
+        }
+
+        // Navigation dot clicks
+        document.querySelectorAll('.nav-dot').forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentSlide = index;
+                updateSlideDisplay();
+            });
+        });
+
+        // Initialize
+        if (totalSlides > 0) {
+            document.addEventListener('DOMContentLoaded', () => {
+                updateSlideDisplay();
+            });
+        }
+    </script>
+</body>
+</html>

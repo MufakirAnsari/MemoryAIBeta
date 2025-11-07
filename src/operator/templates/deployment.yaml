@@ -1,0 +1,180 @@
+{{- range $component, $config := .Values.components }}
+{{- if $config.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "memoryai.fullname" $ }}-{{ $component }}
+  labels:
+    {{- include "memoryai.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ $component }}
+spec:
+  replicas: {{ $config.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "memoryai.selectorLabels" $ | nindent 6 }}
+      app.kubernetes.io/component: {{ $component }}
+  template:
+    metadata:
+      annotations:
+        {{- if $.Values.global.postQuantum.enabled }}
+        memoryai.io/signature-algorithm: {{ $.Values.global.postQuantum.signatureAlgorithm }}
+        {{- end }}
+        {{- if $.Values.global.differentialPrivacy.enabled }}
+        memoryai.io/dp-epsilon: {{ $.Values.global.differentialPrivacy.epsilon | quote }}
+        memoryai.io/dp-delta: {{ $.Values.global.differentialPrivacy.delta | quote }}
+        {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
+      labels:
+        {{- include "memoryai.selectorLabels" $ | nindent 8 }}
+        app.kubernetes.io/component: {{ $component }}
+    spec:
+      {{- with $.Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "memoryai.serviceAccountName" $ }}
+      securityContext:
+        {{- toYaml $.Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ $component }}
+          {{- if $config.image.digest }}
+          image: "{{ $config.image.repository }}@{{ $config.image.digest }}"
+          {{- else }}
+          image: "{{ $config.image.repository }}:{{ $config.image.tag }}"
+          {{- end }}
+          imagePullPolicy: {{ $config.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ $config.service.port }}
+              protocol: TCP
+          {{- if $config.livenessProbe }}
+          livenessProbe:
+            {{- toYaml $config.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if $config.readinessProbe }}
+          readinessProbe:
+            {{- toYaml $config.readinessProbe | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml $config.resources | nindent 12 }}
+          env:
+            - name: MEMORYAI_COMPONENT
+              value: {{ $component }}
+            - name: MEMORYAI_VERSION
+              value: {{ $.Chart.AppVersion }}
+            - name: MEMORYAI_USER_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            {{- if $.Values.global.postQuantum.enabled }}
+            - name: PQ_SIGNATURE_VERIFY
+              value: "true"
+            - name: PQ_ALGORITHM
+              value: {{ $.Values.global.postQuantum.signatureAlgorithm }}
+            {{- end }}
+            {{- if $.Values.global.differentialPrivacy.enabled }}
+            - name: DP_EPSILON
+              value: {{ $.Values.global.differentialPrivacy.epsilon | quote }}
+            - name: DP_DELTA
+              value: {{ $.Values.global.differentialPrivacy.delta | quote }}
+            {{- end }}
+            {{- if eq $component "llm-core" }}
+            - name: MYTHIC_OFFLOAD
+              value: "true"
+            - name: MYTHIC_DEVICE_ID
+              value: {{ $config.mythic.deviceId | quote }}
+            - name: MYTHIC_PERFORMANCE_MODE
+              value: {{ $config.mythic.performanceMode }}
+            - name: MYTHIC_POWER_LIMIT_MW
+              value: {{ $config.mythic.powerLimit | quote }}
+            - name: MYTHIC_MEMORY_POOL_SIZE_MB
+              value: {{ $config.mythic.memoryPoolSize | quote }}
+            {{- end }}
+            {{- if eq $component "memory-service" }}
+            - name: DENSE_EMBED_MODEL
+              value: {{ $config.ragFusion.denseModel }}
+            - name: SPARSE_MODEL
+              value: {{ $config.ragFusion.sparseModel }}
+            - name: COLBERT_MODEL
+              value: {{ $config.ragFusion.colbertModel }}
+            - name: FUSION_TOP_K
+              value: {{ $config.ragFusion.topK | quote }}
+            {{- end }}
+            {{- if eq $component "suggest-service" }}
+            - name: GLOBAL_LLM_TIMEOUT
+              value: {{ $config.routing.globalTimeout | quote }}
+            - name: FALLBACK_CASCADE
+              value: {{ $config.routing.fallbackCascade | quote }}
+            - name: CRL_HF_ENABLED
+              value: {{ $config.routing.crlHF | quote }}
+            {{- end }}
+            {{- if eq $component "guardian-service" }}
+            - name: TEEN_CLASSIFIER_THRESHOLD
+              value: {{ $config.safety.teenClassifierThreshold | quote }}
+            - name: IMMUTABLE_AUDIT
+              value: {{ $config.safety.immutableAudit | quote }}
+            - name: KILL_SWITCH_ENABLED
+              value: {{ $config.safety.killSwitch | quote }}
+            - name: GDPR_TEEN_CONSENT
+              value: {{ $config.safety.gdprTeenConsent | quote }}
+            - name: COPPA_COMPLIANCE
+              value: {{ $config.safety.coppaCompliance | quote }}
+            {{- end }}
+            {{- if eq $component "federated-service" }}
+            - name: DP_EPSILON
+              value: {{ $config.dp.epsilon | quote }}
+            - name: HISTOGRAM_BUCKETS
+              value: {{ $config.dp.histogramBuckets | quote }}
+            - name: OPT_IN_ONLY
+              value: {{ $config.dp.optInOnly | quote }}
+            - name: ZK_PROOF_GRAD
+              value: {{ $config.dp.zkProofGrad | quote }}
+            {{- end }}
+            {{- if eq $component "web-ui" }}
+            - name: GLASS_MORPHIC
+              value: {{ $config.ui.glassMorphic | quote }}
+            - name: HALO_MODE
+              value: {{ $config.ui.haloMode | quote }}
+            - name: FOCUS_MODE
+              value: {{ $config.ui.focusMode | quote }}
+            - name: TEEN_PALETTE
+              value: {{ $config.ui.teenPalette | quote }}
+            {{- end }}
+          volumeMounts:
+            {{- if eq $component "llm-core" }}
+            - name: model-storage
+              mountPath: /app/models
+              readOnly: true
+            {{- end }}
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        {{- if eq $component "llm-core" }}
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: {{ include "memoryai.fullname" $ }}-models
+        {{- end }}
+        - name: config
+          configMap:
+            name: {{ include "memoryai.fullname" $ }}-config
+        - name: tmp
+          emptyDir: {}
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+{{- end }}
+{{- end }}

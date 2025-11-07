@@ -1,0 +1,11 @@
+{
+	"id": "memoryai-enterprise",
+	"name": "MemoryAI Enterprise",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Hyper-personal AI companion with zero-knowledge privacy for Obsidian",
+	"author": "MemoryAI Team",
+	"authorUrl": "https://memoryai.ai",
+	"fundingUrl": "https://github.com/sponsors/memoryai",
+	"isDesktopOnly": false
+}

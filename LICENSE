@@ -1,0 +1,39 @@
+MIT License
+
+Copyright (c) 2024 MemoryAI Enterprise
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Additional Terms for MemoryAI Enterprise:
+
+1. **Privacy Compliance**: This software implements privacy-preserving technologies including differential privacy and zero-knowledge proofs. Users must comply with applicable privacy laws and regulations.
+
+2. **AI Safety**: The AI components include safety measures and content filtering. Users must not attempt to bypass these safety features.
+
+3. **Commercial Use**: Commercial use is permitted, but redistribution must maintain the same license terms.
+
+4. **Attribution**: When using MemoryAI Enterprise in commercial products, attribution must be provided in product documentation.
+
+5. **Liability**: The authors disclaim all liability for any damages resulting from the use of this software, including but not limited to AI-generated content, privacy breaches, or system failures.
+
+6. **Export Compliance**: Users are responsible for complying with export control laws and regulations in their jurisdiction.
+
+For questions about licensing, contact: legal@memoryai.com

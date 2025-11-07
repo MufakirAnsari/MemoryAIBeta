@@ -1,0 +1,32 @@
+{{- range $component, $config := .Values.components }}
+{{- if $config.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "memoryai.fullname" $ }}-{{ $component }}
+  labels:
+    {{- include "memoryai.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ $component }}
+  {{- if $config.service.annotations }}
+  annotations:
+    {{- toYaml $config.service.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ $config.service.type | default "ClusterIP" }}
+  ports:
+    - port: {{ $config.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    {{- if $config.service.grpcPort }}
+    - port: {{ $config.service.grpcPort }}
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+    {{- end }}
+  selector:
+    {{- include "memoryai.selectorLabels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ $component }}
+{{- end }}
+{{- end }}
