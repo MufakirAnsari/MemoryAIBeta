@@ -231,7 +231,7 @@ MemoryAI Enterprise is released under the [MIT License](LICENSE) with additional
 
 ## 📞 Support
 
-- 📧 **Email**: support@memoryai.com
+- 📧 **Email**: mufakir.ansari@gmail.com
 - 💬 **Discord**: [Join our community](https://discord.gg/)
 - 📚 **Documentation**: [docs.memoryai.com](https://docs.#.com)
 - 🐛 **Issues**: [GitHub Issues](https://github.com/memoryai/enterprise/issues)
