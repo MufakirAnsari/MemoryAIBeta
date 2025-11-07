@@ -232,10 +232,10 @@ MemoryAI Enterprise is released under the [MIT License](LICENSE) with additional
 ## 📞 Support
 
 - 📧 **Email**: support@memoryai.com
-- 💬 **Discord**: [Join our community](https://discord.gg/memoryai)
-- 📚 **Documentation**: [docs.memoryai.com](https://docs.memoryai.com)
+- 💬 **Discord**: [Join our community](https://discord.gg/)
+- 📚 **Documentation**: [docs.memoryai.com](https://docs.#.com)
 - 🐛 **Issues**: [GitHub Issues](https://github.com/memoryai/enterprise/issues)
-- 🌐 **Website**: [memoryai.com](https://memoryai.com)
+- 🌐 **Website**: [memoryai.com](https://#.com)
 
 ---
 
@@ -245,7 +245,7 @@ MemoryAI Enterprise is released under the [MIT License](LICENSE) with additional
 
 <p align="center">
   <a href="https://github.com/memoryai/enterprise">GitHub</a> • 
-  <a href="https://docs.memoryai.com">Documentation</a> • 
-  <a href="https://discord.gg/memoryai">Discord</a> • 
-  <a href="https://memoryai.com">Website</a>
+  <a href="https://#">Documentation</a> • 
+  <a href="https://discord.gg/#">Discord</a> • 
+  <a href="https://#">Website</a>
 </p># MemoryAIBeta
