@@ -39,7 +39,7 @@ MemoryAI Enterprise is a comprehensive, self-hosted AI ecosystem that brings hyp
 
 ### One-Command Installation
 ```bash
-git clone https://github.com/memoryai/enterprise.git
+git clone https://github.com/MufakirAnsari/MemoryAIBeta.git
 cd memoryai-enterprise
 ./scripts/install.sh
 ```
@@ -47,7 +47,7 @@ cd memoryai-enterprise
 ### Manual Installation
 ```bash
 # Clone repository
-git clone https://github.com/memoryai/enterprise.git
+git clone https://github.com/MufakirAnsari/MemoryAIBeta.git
 cd memoryai-enterprise
 
 # Start services
@@ -114,7 +114,7 @@ docker-compose -f memoryai.local.yml up -d
 ### Development Setup
 ```bash
 # Clone and setup development environment
-git clone https://github.com/memoryai/enterprise.git
+git clone https://github.com/MufakirAnsari/MemoryAIBeta.git
 cd memoryai-enterprise
 ./scripts/dev-setup.sh
 
